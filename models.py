@@ -76,43 +76,42 @@ class DecoderLSTM(nn.Module):
             # Cross entropy loss: vocab_dist 32 x 30, onehot 32 x 30
             NLL = (-1)*torch.log(vocab_dist)
             ce_loss = torch.sum(NLL*onehot, dim=1)
-            loss += torch.sum(ce_loss*mask_Y[:,t])
-            
+            loss += torch.sum(ce_loss*mask_Y[:,t]) 
         # averaged loss over the entire batch (except padding)
         return loss/torch.sum(mask_Y)
 
     def forward_inference(self, encoder_output):
-    	t_max = 80
-    	prediction = []
-    	# SOS = 1
-    	word = torch.ones(1)
-    	word = word.type(torch.LongTensor)
-    	word_embedding = self.embedding(word)
-    	# Feed in the encoder_hidden
-    	hidden = encoder_output
-    	for t in range(t_max-1):
-    		vocab_dist, hidden = self.forward_step(word_embedding, hidden)  # vocab_dist = B x V = 10 x 30
-    		word = torch.argmax(vocab_dist, dim=1)   # word = B x 1
-    		if word==2:
-    			break
-    		prediction.append(word)
-    		# Model's output as next input
-    		word_embedding = self.embedding(word)
-
-    	return prediction
+        t_max = 80
+        prediction_int = []
+        # SOS = 1
+        char = torch.ones(1)
+        char = char.type(torch.LongTensor)
+        char_embedding = self.embedding(char)
+        # Feed in the encoder_hidden
+        hidden = encoder_output
+        for t in range(t_max-1):
+            vocab_dist, hidden = self.forward_step(char_embedding, hidden)  # vocab_dist = B x V = 10 x 30
+            char = torch.argmax(vocab_dist, dim=1) # word = B x 1
+            if char==2: break
+            prediction_int.append(char)
+            # Model's output as next input
+            char_embedding = self.embedding(char)
+        return prediction_int
 
 
 class Seq2Seq_ScheduledSampling(nn.Module):
-	def __init__(self, vocab_size):
-		super(Seq2Seq_ScheduledSampling, self).__init__()
-		self.encoder = EncoderLSTM()
-		self.decoder = DecoderLSTM(vocab_size)
+    def __init__(self, vocab_size):
+        super(Seq2Seq_ScheduledSampling, self).__init__()
+        self.encoder = EncoderLSTM()
+        self.decoder = DecoderLSTM(vocab_size)
 
-	def forward(self, X_acoustic, Y_labels, Y_mask, beta):
-		encoder_output = self.encoder.forward(X_acoustic)
-		loss = self.decoder.forward(Y_labels, encoder_output, Y_mask, beta)
+    def forward(self, X_acoustic, Y_labels, Y_mask, beta):
+        encoder_output = self.encoder.forward(X_acoustic)
+        loss = self.decoder.forward(Y_labels, encoder_output, Y_mask, beta)
+        return loss
 
-		return loss
-
-
+    def forward_inference(self, acoustic_seq):
+        encoder_output = self.encoder.forward(acoustic_seq)
+        prediction = self.decoder.forward_inference(encoder_output)
+        return prediction
 
