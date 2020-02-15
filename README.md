@@ -10,7 +10,7 @@ It studied the performance of three systems: (1) Image captioning (2) Constituen
 
 
 
-For logging and visualization on tensorboard:\
+For logging and visualization on TensorBoard:\
 tensorboard --logdir runs\
 http://localhost:6006
 
