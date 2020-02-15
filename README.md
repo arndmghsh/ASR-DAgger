@@ -16,7 +16,7 @@ Character Error Rate (CER) vs. Epochs (evaluated on test set). Red = Teacher For
 Training Loss vs. Epochs: Red = Teacher Forcing (beta=1), Blue = Scheduled Sampling (beta=0.75)\
 ![alt text](./plots/Train_loss.png)\
 Test Loss vs. Epochs: Red = Teacher Forcing (beta=1), Blue = Scheduled Sampling (beta=0.75)\
-![alt text](./plots/Test_loss.png)\
+![alt text](./plots/Test_loss.png)
 
 
 
