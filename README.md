@@ -19,7 +19,7 @@ http://localhost:6006\
 git diff\
 git status\
 git add -A\
-git commit -m "Added this and that"
+git commit -m "Added this and that"\
 git pull origin master\
 git push origin master\
 
