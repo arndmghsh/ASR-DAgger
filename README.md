@@ -14,7 +14,7 @@ For logging and visualization on TensorBoard:\
 tensorboard --logdir runs\
 http://localhost:6006\
 
-Gitting:\
+## Gitting:
 ### Pusing changes:
 git diff\
 git status\
