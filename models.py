@@ -21,7 +21,7 @@ class EncoderLSTM(nn.Module):
         # input to LSTM = B x L x 20
         output, hidden = self.lstm(inp)
         # output, (h_n, c_n) = self.lstm(embedding, (h, c)) ----- (h,c) initialized to zero
-        # output size = B x Lx 128
+        # output size = B x L x 128
         # (h,c) are from the last time step: both have size [1,B,128]
         # return the last hidden output 1 x B x H
         return (hidden[0][0,:,:],hidden[1][0,:,:])
@@ -30,6 +30,7 @@ class EncoderLSTM(nn.Module):
 class DecoderLSTM(nn.Module):
     def __init__(self, vocab_size):
         super(DecoderLSTM, self).__init__()
+        self.vocab_size = vocab_size
         self.embedding_size = 256
         self.decoder_hidden_size = 128
         self.embedding = nn.Embedding(vocab_size, self.embedding_size)        
@@ -70,7 +71,7 @@ class DecoderLSTM(nn.Module):
             # ground truth B x 1 is the char at time step t+1 or t+1th column in B x L = 32 x L
             true_label = inpt[:,t+1]            
             # one hot encode the true label # B x 1 = 32 x 1 --> 32 x 30
-            onehot = torch.zeros((batch_size, 30))
+            onehot = torch.zeros((batch_size, self.vocab_size))
             for i in range(batch_size):
                 onehot[i][true_label[i]]=1
             # Cross entropy loss: vocab_dist 32 x 30, onehot 32 x 30
@@ -92,8 +93,9 @@ class DecoderLSTM(nn.Module):
         for t in range(t_max-1):
             vocab_dist, hidden = self.forward_step(char_embedding, hidden)  # vocab_dist = B x V = 10 x 30
             char = torch.argmax(vocab_dist, dim=1) # word = B x 1
-            if char==2: break
-            prediction_int.append(char)
+            if char==2: 
+                break
+            prediction_int.append(int(char))
             # Model's output as next input
             char_embedding = self.embedding(char)
         return prediction_int

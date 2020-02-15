@@ -11,16 +11,13 @@ from nltk.metrics.distance import edit_distance
 # for accesing files in the directory
 import glob
 import errno
-import sys
+import os, sys
 
 from models import Seq2Seq_ScheduledSampling
 import my_data
 import utils
 
 def train(model, train_dataset, test_dataset):
-    checkpoint_interval = 5
-    checkpoint_dir = './checkpoints/'
-
     # Data loaders - returns (input_seqs_padded, input_lengths, target_seqs_padded, target_lengths) for each iteration
     train_dataloader = torch.utils.data.DataLoader(dataset=train_dataset,
                                               batch_size=32,
@@ -39,7 +36,7 @@ def train(model, train_dataset, test_dataset):
     # test_loss_per_epoch = []
     # test_CER = []
     
-    beta = 1  # = All oracle,       beta = 0  = All Model,       beta = 0.75
+    # beta = 0.75  # = All oracle,       beta = 0  = All Model,       beta = 0.75
     for epoch in range(EPOCHS):
         model.train()
         # beta = beta - 0.05
@@ -64,7 +61,7 @@ def train(model, train_dataset, test_dataset):
         # train_loss_per_epoch.append(avg_train_loss)
 
         # Save model after few epochs
-        if epoch > 0 and epoch % checkpoint_interval == 0: 
+        if (epoch+1)%checkpoint_interval == 0: 
             utils.save_checkpoint(model, optimizer, epoch, checkpoint_dir)
 
         # Calculate loss on the Test set
@@ -109,29 +106,39 @@ def evaluate(model, test_dataset):
         for i_batch, batch in enumerate(dataloader):
             input_seq, target_seq, target_masks = batch
             prediction_int = model.forward_inference(input_seq)
-            sentence = [int2char[int(j)] for j in prediction_int]
+            sentence = [int2char[j] for j in prediction_int]
             sentence = ''.join(sentence)
 
             # Shape of target sequence = 1 x L
             target_sentence = [int2char[int(j)] for j in target_seq[0]]
+            target_sentence.pop(0)  #remove <SOS> token
+            target_sentence.pop(-1) #remove <EOS> token
             target_sentence = ''.join(target_sentence)
-
+            
             cer += edit_distance(sentence, target_sentence)/len(sentence)
             num_examples += 1
     avg_cer = cer/num_examples
+    print(sentence)
+    print(target_sentence, '\n')
     return avg_cer
 
 
 if __name__ == "__main__":
-
-    # Setup tensorboard logger
-    log_path = "./runs/run0"
-    tensorboard_logger.configure(log_path)
-
-    EPOCHS = 50
+    # Sampling parameter
+    beta = 1
+    run = '0'
+    EPOCHS = 100
     EMB_SIZE = 256
     HIDDEN_SIZE = 128
     VOCAB_SIZE = 30    #26 + space,sos,eos,pad
+
+    checkpoint_interval = 5
+    checkpoint_dir = './checkpoints/run'+run+'/'
+    os.makedirs(checkpoint_dir, exist_ok=True)
+
+    # Setup tensorboard logger
+    log_dir = "./runs/run"+run+"_beta"+str(beta)
+    tensorboard_logger.configure(log_dir)
     
     # Label/Character encoding
     chars = ['<PAD>','<SOS>', '<EOS>',' ',"a","b","c","d","e","f","g","h","i","j","k", \
