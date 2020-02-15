@@ -36,7 +36,9 @@ def train(model, train_dataset, test_dataset):
     # Default parameters: lr=0.001, betas=(0.9, 0.999), eps=1e-08, weight_decay=0, amsgrad=False)
     if use_cuda:
         model = model.cuda()
-    # beta = 0.75  # = All oracle,       beta = 0  = All Model,       beta = 0.75
+
+    # DAgger policy = beta*oracle + (1-beta)*model
+    # beta = 1 = All oracle,   beta = 0  = All Model,       beta = 0.75
     for epoch in range(EPOCHS):
         model.train()
         # beta = beta - 0.05
