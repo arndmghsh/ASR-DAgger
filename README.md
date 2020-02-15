@@ -21,8 +21,7 @@ git status\
 git add -A\
 git commit -m "Added this and that"\
 git pull origin master\
-git push origin master\
-
+git push origin master
 ### Work on a new branch, commit to local, and push to remote
 git branch -a\
 git branch new_branch\
@@ -32,7 +31,7 @@ git status\
 git diff\
 git add -A\
 git commit -m "Added this and that"\
-git push -u origin new_branch\
+git push -u origin new_branch
 ### Merge with the master branch
 git checkout master\
 git pull origin master\
@@ -43,4 +42,4 @@ git branch --merged\
 ### Delete the new_branch
 git branch -d new_branch\
 git branch -a\
-git push origin --delete new_branch\
+git push origin --delete new_branch
