@@ -1,10 +1,19 @@
-# ASR-DAgger
+# Automatic Speech Recognition with DAgger
 Seq2Seq Automatic Speech Recognition using DAgger (Scheduled Sampling) and Supervised Imitation Learning (Teacher Forcing).
 
 
 The effect of Scheduled Sampling on RNN based sequence predicitin model was first studied in [1] S. Bengio, O. Vinyals, N. Jaitly, and N. Shazeer. Scheduled sampling for sequence prediction with recurrent neural networks. In Advances in Neural Information Processing Systems, pages 1171–1179, 2015.
 
 It studied the performance of three systems: (1) Image captioning (2) Constituency Parsing (3) Speech Recognition. The speech recognition model was two layer LSTM for direct acoustic to HMM state (phoneme) prediction. The frames to HMM states alighnment and labeling was obtained using KALDI on TIMIT dataset. Note that this was not an encoder-decoder based model.
+
+
+## First experiment:
+(1) Dataset: A subset of the TIMIT dataset. No. of training samples ~ 1k. No of test samples ~ 500. 20 dimensional Mel features.\
+(2) Model: Encoder-decoder model. Each was made of single layer of LSTM. No droput. No learning rate decay. Optimizer used was Adam with default parameters.\
+(3) Experiment results:
+<![Alt text](https://github.com/arndmghsh/ASR-ScheduledSampling/blob/master/plots/Test_CER.svg)>
+<img src="https://github.com/arndmghsh/ASR-ScheduledSampling/blob/master/plots/Test_CER.svg">
+
 
 
 ## TIMIT dataset
