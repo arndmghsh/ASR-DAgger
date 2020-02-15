@@ -12,5 +12,35 @@ It studied the performance of three systems: (1) Image captioning (2) Constituen
 
 For logging and visualization on TensorBoard:\
 tensorboard --logdir runs\
-http://localhost:6006
+http://localhost:6006\
 
+Gitting:\
+### Pusing changes:
+git diff\
+git status\
+git add -A\
+git commit -m "Added this and that"
+git pull origin master\
+git push origin master\
+
+### Work on a new branch, commit to local, and push to remote
+git branch -a\
+git branch new_branch\
+git checkout new_branch\
+... Do something ...\
+git status\
+git diff\
+git add -A\
+git commit -m "Added this and that"\
+git push -u origin new_branch\
+### Merge with the master branch
+git checkout master\
+git pull origin master\
+git branch --merged\
+git merge new_branch\
+git push origin master\
+git branch --merged\
+### Delete the new_branch
+git branch -d new_branch\
+git branch -a\
+git push origin --delete new_branch\
