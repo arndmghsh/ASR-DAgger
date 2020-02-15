@@ -37,6 +37,7 @@ def train(model, train_dataset, test_dataset):
     if use_cuda:
         model = model.cuda()
 
+    train_loss_list, test_loss_list, test_cer_list = [], [], []
     # DAgger policy = beta*oracle + (1-beta)*model
     # beta = 1 = All oracle,   beta = 0  = All Model,       beta = 0.75
     for epoch in range(EPOCHS):
@@ -67,6 +68,7 @@ def train(model, train_dataset, test_dataset):
             optimizer.step()
             total_num_batches+=1
         avg_train_loss = train_loss/total_num_batches
+        train_loss_list.append(avg_train_loss)
 
         # Save model after few epochs
         if (epoch+1)%checkpoint_interval == 0: 
@@ -89,9 +91,11 @@ def train(model, train_dataset, test_dataset):
             test_loss += t_loss.item()
             total_num_test_batches+=1
         avg_test_loss = test_loss/total_num_test_batches
+        test_loss_list.append(avg_test_loss)
 
         # Evaluate Character Error Rate on the Test set
         avg_char_err_rate = evaluate(model, test_dataset)
+        test_cer_list.append(avg_char_err_rate)
 
         # Log the values
         tensorboard_logger.log_value("Train_loss", float(avg_train_loss), epoch)
@@ -102,6 +106,15 @@ def train(model, train_dataset, test_dataset):
 
         print("Epoch: {}, Train Loss: {}, Test Loss: {}, Test CER: {}".format( \
                                         epoch, avg_train_loss, avg_test_loss, avg_char_err_rate))
+    # Save statistics to text files
+    save_dir = './plots/run'+run+"_beta"+str(beta)+'/'
+    os.makedirs(save_dir, exist_ok=True)
+    files_to_write = ['Train_loss', 'Test_loss', 'Test_CER']
+    the_list = [train_loss_list, test_loss_list, test_cer_list]
+    for i_el, el in enumerate(files_to_write):
+        with open(save_dir+el+'.txt', 'w') as file_handler:
+            for item in the_list[i_el]:
+                file_handler.write(f"{item} ")
     return
 
 
@@ -146,7 +159,7 @@ if __name__ == "__main__":
     # Sampling parameter
     beta = 0.75
     run = '1'
-    EPOCHS = 100
+    EPOCHS = 2
     EMB_SIZE = 256
     HIDDEN_SIZE = 128
     VOCAB_SIZE = 30    #26 + space,sos,eos,pad
