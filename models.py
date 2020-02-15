@@ -100,7 +100,6 @@ class DecoderLSTM(nn.Module):
             char_embedding = self.embedding(char)
         return prediction_int
 
-
 class Seq2Seq_ScheduledSampling(nn.Module):
     def __init__(self, vocab_size):
         super(Seq2Seq_ScheduledSampling, self).__init__()

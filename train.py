@@ -31,11 +31,7 @@ def train(model, train_dataset, test_dataset):
 
     optimizer = torch.optim.Adam(model.parameters())
     # Default parameters: lr=0.001, betas=(0.9, 0.999), eps=1e-08, weight_decay=0, amsgrad=False)
-    
-    # train_loss_per_epoch = []
-    # test_loss_per_epoch = []
-    # test_CER = []
-    
+
     # beta = 0.75  # = All oracle,       beta = 0  = All Model,       beta = 0.75
     for epoch in range(EPOCHS):
         model.train()
@@ -58,7 +54,6 @@ def train(model, train_dataset, test_dataset):
             optimizer.step()
             total_num_batches+=1
         avg_train_loss = train_loss/total_num_batches
-        # train_loss_per_epoch.append(avg_train_loss)
 
         # Save model after few epochs
         if (epoch+1)%checkpoint_interval == 0: 
@@ -75,12 +70,9 @@ def train(model, train_dataset, test_dataset):
             test_loss += t_loss.item()
             total_num_test_batches+=1
         avg_test_loss = test_loss/total_num_test_batches
-        # test_loss_per_epoch.append(avg_test_loss)
 
         # Evaluate Character Error Rate on the Test set
-        model.eval()
         avg_char_err_rate = evaluate(model, test_dataset)
-        # test_CER.append(avg_char_err_rate)
 
         # Log the values
         tensorboard_logger.log_value("Train_loss", float(avg_train_loss), epoch)
@@ -95,6 +87,7 @@ def train(model, train_dataset, test_dataset):
 
 
 def evaluate(model, test_dataset):
+    model.eval()
     # Dataloader, Batch size = 1 during evaluation/inference
     dataloader = torch.utils.data.DataLoader(dataset=test_dataset,
                                               batch_size=1,
@@ -115,7 +108,7 @@ def evaluate(model, test_dataset):
             target_sentence.pop(-1) #remove <EOS> token
             target_sentence = ''.join(target_sentence)
             
-            cer += edit_distance(sentence, target_sentence)/len(sentence)
+            cer += edit_distance(sentence, target_sentence)/len(target_sentence)
             num_examples += 1
     avg_cer = cer/num_examples
     print(sentence)
@@ -125,8 +118,8 @@ def evaluate(model, test_dataset):
 
 if __name__ == "__main__":
     # Sampling parameter
-    beta = 1
-    run = '0'
+    beta = 0.75
+    run = '1'
     EPOCHS = 100
     EMB_SIZE = 256
     HIDDEN_SIZE = 128
