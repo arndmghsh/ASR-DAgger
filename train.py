@@ -157,8 +157,8 @@ def evaluate(model, test_dataset):
 
 if __name__ == "__main__":
     # Sampling parameter
-    beta = 0.75
-    run = '1'
+    beta = 0.9
+    run = '2'
     EPOCHS = 2
     EMB_SIZE = 256
     HIDDEN_SIZE = 128
