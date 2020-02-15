@@ -75,6 +75,7 @@ def train(model, train_dataset, test_dataset):
         test_loss = 0.0
         total_num_test_batches = 0
         for i_batch, batch in enumerate(test_dataloader):
+            input_seqs_padded, target_seqs_padded, target_masks = batch
             # Feed data
             input_seqs_padded, target_seqs_padded, target_masks = \
                     Variable(input_seqs_padded), Variable(target_seqs_padded), Variable(target_masks)
