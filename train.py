@@ -3,6 +3,9 @@ import torch.nn as nn
 import torch.nn.functional as F
 from torch import optim
 from torch.utils import data
+from torch.autograd import Variable
+import torch.backends.cudnn as cudnn
+
 
 import numpy as np
 import tensorboard_logger
@@ -31,7 +34,8 @@ def train(model, train_dataset, test_dataset):
 
     optimizer = torch.optim.Adam(model.parameters())
     # Default parameters: lr=0.001, betas=(0.9, 0.999), eps=1e-08, weight_decay=0, amsgrad=False)
-
+    if use_cuda:
+        model = model.cuda()
     # beta = 0.75  # = All oracle,       beta = 0  = All Model,       beta = 0.75
     for epoch in range(EPOCHS):
         model.train()
@@ -45,8 +49,15 @@ def train(model, train_dataset, test_dataset):
         # for i_batch, (input_seqs_padded, target_seqs_padded, target_masks) in tqdm(enumerate(train_dataloader)):
         for i_batch, batch in enumerate(train_dataloader):
             input_seqs_padded, target_seqs_padded, target_masks = batch
+            # Feed data
+            input_seqs_padded, target_seqs_padded, target_masks = \
+                    Variable(input_seqs_padded), Variable(target_seqs_padded), Variable(target_masks)
+            if use_cuda:
+                input_seqs_padded, target_seqs_padded, target_masks = \
+                        input_seqs_padded.cuda(), target_seqs_padded.cuda(), target_masks.cuda()
 
             optimizer.zero_grad()
+
             loss = model.forward(input_seqs_padded, target_seqs_padded, target_masks, beta) # averaged loss per batch
             loss.backward()
             train_loss += loss.item()
@@ -64,7 +75,12 @@ def train(model, train_dataset, test_dataset):
         test_loss = 0.0
         total_num_test_batches = 0
         for i_batch, batch in enumerate(test_dataloader):
-            input_seqs_padded, target_seqs_padded, target_masks = batch
+            # Feed data
+            input_seqs_padded, target_seqs_padded, target_masks = \
+                    Variable(input_seqs_padded), Variable(target_seqs_padded), Variable(target_masks)
+            if use_cuda:
+                input_seqs_padded, target_seqs_padded, target_masks = \
+                        input_seqs_padded.cuda(), target_seqs_padded.cuda(), target_masks.cuda()
 
             t_loss = model.forward(input_seqs_padded, target_seqs_padded, target_masks, beta)
             test_loss += t_loss.item()
@@ -98,6 +114,13 @@ def evaluate(model, test_dataset):
     with torch.no_grad():
         for i_batch, batch in enumerate(dataloader):
             input_seq, target_seq, target_masks = batch
+            # Feed data
+            input_seq, target_seq, target_masks = \
+                    Variable(input_seq), Variable(target_seq), Variable(target_masks)
+            if use_cuda:
+                input_seq, target_seq, target_masks = \
+                        input_seq.cuda(), target_seq.cuda(), target_masks.cuda()
+
             prediction_int = model.forward_inference(input_seq)
             sentence = [int2char[j] for j in prediction_int]
             sentence = ''.join(sentence)
@@ -124,6 +147,11 @@ if __name__ == "__main__":
     EMB_SIZE = 256
     HIDDEN_SIZE = 128
     VOCAB_SIZE = 30    #26 + space,sos,eos,pad
+
+    # GPU availability
+    use_cuda = torch.cuda.is_available()
+    if use_cuda:
+        cudnn.benchmark = False
 
     checkpoint_interval = 5
     checkpoint_dir = './checkpoints/run'+run+'/'
