@@ -9,7 +9,7 @@ It studied the performance of three systems: (1) Image captioning (2) Constituen
 
 ## First experiment:
 (1) Dataset: A subset of the TIMIT dataset. No. of training samples ~ 1k. No of test samples ~ 500. 20 dimensional Mel features.\
-(2) Model: Encoder-decoder model. Each was made of single layer of LSTM. No droput. No learning rate decay. Optimizer used was Adam with default parameters.\
+(2) Model: Encoder-decoder model. Each was made of single layer of LSTM. No droput. Adam optimizer with default parameters. Vocab size = 30 (26 + \<PAD\>, ' ', \<SOS\>, \<EOS\>)\
 (3) Experiment results:\
 Character Error Rate (CER) vs. Epochs (evaluated on test set). Red = Teacher Forcing (beta=1), Blue = Scheduled Sampling (beta=0.75)\
 ![alt text](./plots/Test_CER.png)\
