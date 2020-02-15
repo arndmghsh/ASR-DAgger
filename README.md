@@ -38,7 +38,7 @@ git pull origin master\
 git branch --merged\
 git merge new_branch\
 git push origin master\
-git branch --merged\
+git branch --merged
 ### Delete the new_branch
 git branch -d new_branch\
 git branch -a\
