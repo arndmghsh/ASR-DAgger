@@ -1,0 +1,1 @@
+manual leveling requires an appropriate display of the accelerometer outputs

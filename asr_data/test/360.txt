@@ -1,0 +1,1 @@
+each form represented by the dictionary is looked up in the textform list

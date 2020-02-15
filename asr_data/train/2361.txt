@@ -1,0 +1,1 @@
+again the analyticity of the two curves guarantees that such intervals exist

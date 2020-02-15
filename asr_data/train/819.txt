@@ -1,0 +1,1 @@
+it latches when you close it so stay as long as you like

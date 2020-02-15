@@ -1,0 +1,1 @@
+we now generalize these ideas for general binomial experiments

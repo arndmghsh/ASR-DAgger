@@ -1,0 +1,1 @@
+the platform accelerometers must be slightly modified for this procedure
