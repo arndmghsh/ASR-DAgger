@@ -67,6 +67,7 @@ def train(model, train_dataset, test_dataset):
             # grad_norm = torch.nn.utils.clip_grad_norm(model.parameters(), clip_thresh=1.0)
             optimizer.step()
             total_num_batches+=1
+            # print(total_num_batches)
         avg_train_loss = train_loss/total_num_batches
         train_loss_list.append(avg_train_loss)
 
@@ -157,8 +158,8 @@ def evaluate(model, test_dataset):
 
 if __name__ == "__main__":
     # Sampling parameter
-    beta = 0.9
-    run = '2'
+    beta = 1
+    run = '01'
     EPOCHS = 100
     EMB_SIZE = 256
     HIDDEN_SIZE = 128
@@ -183,9 +184,14 @@ if __name__ == "__main__":
     int2char = dict(enumerate(chars))
     char2int = {ch:i for i,ch in int2char.items()}
 
-    # Custom dataset
-    train_dataset = my_data.Dataset('./asr_data/train/', char2int)
-    test_dataset = my_data.Dataset('./asr_data/test/', char2int)
+    # Smaller TIMIT dataset
+    # train_dataset = my_data.Dataset('./asr_data/train/', char2int)
+    # test_dataset = my_data.Dataset('./asr_data/test/', char2int)
+
+    # Full TIMIT data set
+    train_dataset = my_data.Dataset('./timit_data/mfcc_data/train/', char2int)
+    test_dataset = my_data.Dataset('./timit_data/mfcc_data/test/', char2int)
+
     
     model = Seq2Seq_ScheduledSampling(VOCAB_SIZE)
     train(model, train_dataset, test_dataset)

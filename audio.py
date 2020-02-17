@@ -2,10 +2,11 @@ import librosa
 import librosa.filters
 import math
 import numpy as np
-import tensorflow as tf
+# import tensorflow as tf
 from scipy import signal
-from hyper_parameters import hparams
+import hyper_parameters as hparams
 from scipy.io import wavfile
+
 
 '''Excerpts from
 https://github.com/r9y9/tacotron/blob/0987cedd0d6a6909749c594ca978ac4e11ae79ae/util/audio.py

@@ -13,7 +13,7 @@ import errno
 class EncoderLSTM(nn.Module):
     def __init__(self):
         super(EncoderLSTM, self).__init__()
-        self.input_size = 20   # given 20 x L acoustic inputs
+        self.input_size = 80   # given 20 x L acoustic inputs
         self.hidden_size = 128
         self.lstm = nn.LSTM(self.input_size, self.hidden_size, batch_first = True)
         

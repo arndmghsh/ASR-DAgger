@@ -30,7 +30,14 @@ class Dataset(data.Dataset):
         sentence = file.read()
         file.close()
 
-        char_seq = ['<SOS>'] + list(sentence) + ['<EOS>']
+        sentence = list(sentence)
+        temp = []
+        for ch in sentence:
+            if ch in self.char2int:
+                temp.append(ch)
+
+        char_seq = ['<SOS>'] + temp + ['<EOS>']      
+        # char_seq = ['<SOS>'] + list(sentence) + ['<EOS>']
         encoded_seq = [self.char2int[char] for char in char_seq]
         return torch.LongTensor(encoded_seq)
 
