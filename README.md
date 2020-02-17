@@ -24,7 +24,7 @@ Red = Teacher Forcing (beta=1), Blue = Scheduled Sampling (beta=0.75)\
 
 
 ## Second Experiment - Full TIMIT dataset
-Uses 80 channel mel filterbank spanning 125 Hz to 7.6 kHz.\
+Uses 39 channel mel filterbank spanning 125 Hz to 7.6 kHz.\
 
 
 For logging and visualization on TensorBoard:\
