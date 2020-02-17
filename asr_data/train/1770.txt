@@ -1,1 +1,0 @@
-the simplest kind of separate system uses a single selfcontained unit

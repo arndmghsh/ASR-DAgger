@@ -1,1 +1,0 @@
-this process is especially difficult since gyro drifting is typically random
