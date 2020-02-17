@@ -23,8 +23,8 @@ Red = Teacher Forcing (beta=1), Blue = Scheduled Sampling (beta=0.75)\
 
 
 
-## TIMIT dataset
-The audio file to be used is the converted *.WAV.wav file.
+## Second Experiment - Full TIMIT dataset
+Uses 39 channel mel filterbank.\
 
 
 For logging and visualization on TensorBoard:\
