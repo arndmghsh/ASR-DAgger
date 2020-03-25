@@ -158,24 +158,27 @@ def evaluate(model, test_dataset):
 
 if __name__ == "__main__":
     # Sampling parameter
-    beta = 0.5
-    run = '02'
-    EPOCHS = 100
+    beta = 1
+    run = '8'
+    EPOCHS = 70
     EMB_SIZE = 256
     HIDDEN_SIZE = 128
+    N_LAYERS = 4
+    p_DROPOUT = 0
     VOCAB_SIZE = 30    #26 + space,sos,eos,pad
 
     # GPU availability
     use_cuda = torch.cuda.is_available()
+    use_cuda = False
     if use_cuda:
         cudnn.benchmark = False
 
     checkpoint_interval = 5
-    checkpoint_dir = './checkpoints/run'+run+'/'
+    checkpoint_dir = './checkpoints/run'+run+"_beta"+str(beta)+"_nlayer"+str(N_LAYERS)+"_dropout"+str(p_DROPOUT)+'/'
     os.makedirs(checkpoint_dir, exist_ok=True)
 
     # Setup tensorboard logger
-    log_dir = "./runs/run"+run+"_beta"+str(beta)
+    log_dir = "./runs/run"+run+"_beta"+str(beta)+"_nlayer"+str(N_LAYERS)+"_dropout"+str(p_DROPOUT)
     tensorboard_logger.configure(log_dir)
     
     # Label/Character encoding
@@ -193,7 +196,7 @@ if __name__ == "__main__":
     test_dataset = my_data.Dataset('./timit_data/mfcc_data/test/', char2int)
 
     
-    model = Seq2Seq_ScheduledSampling(VOCAB_SIZE)
+    model = Seq2Seq_ScheduledSampling(VOCAB_SIZE, N_LAYERS, p_DROPOUT)
     train(model, train_dataset, test_dataset)
 
     sys.exit(0)

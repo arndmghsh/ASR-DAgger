@@ -1,3 +1,6 @@
 asr_data/
 __pycache__
 timit_data/
+runs/
+checkpoints/
+plots/
