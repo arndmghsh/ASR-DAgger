@@ -3,4 +3,3 @@ __pycache__
 timit_data/
 runs/
 checkpoints/
-plots/
